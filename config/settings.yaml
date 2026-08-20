@@ -1,5 +1,0 @@
-max_system_intensity: 50
-watchdog_timeout_sec: 2.0
-edging_target_hr: 135
-system_mode: manual
-algorithm_mode: classical_motion
