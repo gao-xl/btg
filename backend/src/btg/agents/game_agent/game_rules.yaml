@@ -1,0 +1,16 @@
+# Hot-reloadable Game Agent mapping configuration.
+global_gain: 1.0
+events:
+  player_damage:
+    base_intensity: 0
+    gain: 1.0
+    cooldown_ms: 250
+    duration_ms: 300
+    channel: A
+  player_death:
+    base_intensity: 80
+    gain: 1.0
+    cooldown_ms: 1500
+    duration_ms: 1500
+    channel: A
+    mode: surge

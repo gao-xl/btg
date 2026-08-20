@@ -1,0 +1,13 @@
+# 安全层配置示例：硬性数值截断 + 控制链路心跳看门狗。
+# clamp 规则将下发到执行器的数值钳制到物理安全区间。
+watchdog:
+  timeout: 2.0        # 2 秒未收到任何下行指令/心跳 → 自动归零全部执行器
+clamps:
+  tens_intensity:
+    min: 0
+    max: 50           # TENS 电流硬上限 50 mA
+    unit: mA
+  vibration_level:
+    min: 0
+    max: 100          # 震动电机占空比上限 100%
+    unit: "%"

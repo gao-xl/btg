@@ -1,0 +1,293 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Motion Tokens ===== */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out-emphatic: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ===== Base ===== */
+html {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-nexus-950 text-nexus-200;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1A2230; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #334458; }
+
+/* ===== Selection ===== */
+::selection { background: rgba(6, 182, 212, 0.3); color: #C8D6E0; }
+
+/* ===== Glass Surface ===== */
+.glass {
+  background: rgba(13, 19, 26, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-heavy {
+  background: rgba(13, 19, 26, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ===== Cyber Toggle ===== */
+.cyber-toggle {
+  @apply relative inline-flex items-center h-8 w-56 rounded-full p-0.5 cursor-pointer select-none;
+  background: #111820;
+  border: 1px solid #1A2230;
+  transition: border-color 200ms var(--ease-out-quart);
+}
+.cyber-toggle:hover {
+  border-color: #334458;
+}
+.cyber-toggle-thumb {
+  @apply absolute h-7 w-[calc(50%-2px)] rounded-full z-10;
+  background: linear-gradient(135deg, #06B6D4, #0891B2);
+  top: 1px;
+  left: 1px;
+  transition: transform 300ms var(--ease-out-expo);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+}
+.cyber-toggle.active .cyber-toggle-thumb {
+  transform: translateX(calc(100% + 2px));
+}
+.cyber-toggle-label {
+  @apply absolute inset-0 flex items-center z-20 font-mono text-xs tracking-wider;
+  pointer-events: none;
+}
+.cyber-toggle-label-left {
+  @apply flex-1 text-center;
+  color: #C8D6E0;
+  transition: color 200ms var(--ease-out-quart);
+}
+.cyber-toggle-label-right {
+  @apply flex-1 text-center;
+  color: #4A5E78;
+  transition: color 200ms var(--ease-out-quart);
+}
+.cyber-toggle.active .cyber-toggle-label-left {
+  color: #4A5E78;
+}
+.cyber-toggle.active .cyber-toggle-label-right {
+  color: #C8D6E0;
+}
+
+/* ===== Waveform Toggle Matrix ===== */
+.wave-btn {
+  @apply flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs tracking-wide cursor-pointer select-none;
+  background: #0D131A;
+  border: 1px solid #1A2230;
+  color: #4A5E78;
+  transition: background-color 150ms var(--ease-out-quart),
+              color 150ms var(--ease-out-quart),
+              border-color 150ms var(--ease-out-quart),
+              transform 150ms var(--ease-out-quart);
+}
+.wave-btn:hover {
+  border-color: #334458;
+  color: #7A8FA3;
+  transform: translateY(-1px);
+}
+.wave-btn:active {
+  transform: translateY(0);
+}
+.wave-btn.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(217, 70, 239, 0.1));
+  border-color: rgba(6, 182, 212, 0.4);
+  color: #22D3EE;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.08);
+}
+
+/* ===== Status Dot ===== */
+.status-dot {
+  @apply inline-block w-2 h-2 rounded-full;
+  animation: status-pulse 2s var(--ease-out-quart) infinite;
+}
+.status-dot.normal { background: #06B6D4; box-shadow: 0 0 6px rgba(6, 182, 212, 0.5); }
+.status-dot.warning { background: #F59E0B; box-shadow: 0 0 6px rgba(245, 158, 11, 0.5); }
+.status-dot.danger { background: #F43F5E; box-shadow: 0 0 6px rgba(244, 63, 94, 0.5); }
+.status-dot.offline { background: #334458; }
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* ===== Clamped Slider ===== */
+.clamped-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  @apply w-full h-2 rounded-full cursor-pointer;
+  background: transparent;
+  outline: none;
+}
+.clamped-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    #06B6D4 0%,
+    #06B6D4 35%,
+    #F59E0B 60%,
+    #F59E0B 65%,
+    #F43F5E 80%,
+    #F43F5E 100%
+  );
+}
+.clamped-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #C8D6E0;
+  border: 2px solid #06B6D4;
+  margin-top: -5px;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+  transition: box-shadow 150ms var(--ease-out-quart),
+              border-color 150ms var(--ease-out-quart);
+}
+.clamped-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.5);
+  border-color: #22D3EE;
+}
+.clamped-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    #06B6D4 0%,
+    #06B6D4 35%,
+    #F59E0B 60%,
+    #F59E0B 65%,
+    #F43F5E 80%,
+    #F43F5E 100%
+  );
+}
+.clamped-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #C8D6E0;
+  border: 2px solid #06B6D4;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+
+/* ===== Threshold Marker on Slider Track ===== */
+.threshold-marker {
+  @apply absolute top-0 bottom-0 w-0.5 z-10;
+  background: repeating-linear-gradient(
+    to bottom,
+    #F43F5E 0px,
+    #F43F5E 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+/* ===== Failover Tag ===== */
+.failover-tag {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.18);
+  color: #22D3EE;
+  transition: background-color 200ms var(--ease-out-quart),
+              border-color 200ms var(--ease-out-quart),
+              color 200ms var(--ease-out-quart);
+}
+.failover-tag.standby {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  color: #FBBF24;
+}
+
+/* ===== Fusion State Badge ===== */
+.fusion-badge {
+  @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono tracking-wider;
+  border: 1px solid;
+  transition: background-color 300ms var(--ease-out-quart),
+              border-color 300ms var(--ease-out-quart),
+              color 300ms var(--ease-out-quart);
+}
+.fusion-badge.baseline {
+  background: rgba(6, 182, 212, 0.08);
+  border-color: rgba(6, 182, 212, 0.25);
+  color: #22D3EE;
+}
+.fusion-badge.oscillation {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.25);
+  color: #FBBF24;
+}
+.fusion-badge.danger {
+  background: rgba(244, 63, 94, 0.08);
+  border-color: rgba(244, 63, 94, 0.25);
+  color: #FB7185;
+}
+
+/* ===== Frequency Stepper ===== */
+.stepper-btn {
+  @apply w-8 h-8 flex items-center justify-center rounded-md font-mono text-sm select-none cursor-pointer;
+  background: #0D131A;
+  border: 1px solid #1A2230;
+  color: #7A8FA3;
+  transition: background-color 150ms var(--ease-out-quart),
+              color 150ms var(--ease-out-quart),
+              border-color 150ms var(--ease-out-quart),
+              transform 100ms var(--ease-out-quart);
+}
+.stepper-btn:hover {
+  border-color: #06B6D4;
+  color: #22D3EE;
+  background: rgba(6, 182, 212, 0.08);
+}
+.stepper-btn:active {
+  transform: scale(0.92);
+}
+
+/* ===== Panel Cards ===== */
+.panel {
+  @apply rounded-xl overflow-hidden;
+  background: #0D131A;
+  border: 1px solid #1A2230;
+  transition: border-color 200ms var(--ease-out-quart);
+}
+.panel:hover {
+  border-color: #243040;
+}
+
+/* ===== Monitor Grid ===== */
+.monitor-grid {
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .status-dot { animation: none; }
+  .watchdog-track { animation: none; }
+}

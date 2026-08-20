@@ -1,0 +1,29 @@
+# 标题：深夜竞技的暖房
+## 第一章：开场
+- intro
+  > 旁白：夜色低垂，房间里只亮着暖黄的灯
+  > 台词(A)：困了吧？我们十分钟后收尾
+  = stt text contains 继续 -> middle
+  >> 超时 45 -> end
+
+## 第二章：升温
+- middle
+  > 台词(B)：那开始今天的节奏
+  > 执行 B=20
+  = telemetry heart_rate_bpm gte 120 -> climax
+  >> 超时 30 -> warmdown
+
+- warmdown
+  > 旁白：保持平稳，慢慢放松
+  > 执行 B=8
+  = telemetry heart_rate_bpm lt 110 -> end
+  >> 超时 60 -> end
+
+## 第三章：尾声
+- climax
+  > 台词(A)：心率上来了，我们减一点强度
+  > 执行 B=12
+  >> 超时 20 -> end
+
+- end
+  > 旁白：今晚到此为止，晚安

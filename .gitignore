@@ -1,0 +1,46 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.python-version
+
+# ---- Node / 前端 ----
+node_modules/
+dist/
+.next/
+.nuxt/
+*.local
+*.log
+
+# ---- 测试 / 缓存 ----
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ---- 本地工具目录 ----
+.trae/
+.trae-html-share-packages/
+.preflight/
+
+# ---- 环境变量（密钥）----
+.env
+.env.*
+!.env.example
+
+# ---- 运行时配置（只提交 example 版本）----
+config/devices.yaml
+config/safety.yaml
+
+# ---- 本地生成的分析/报告产物 ----
+BTG_项目分析报告.html
+bio-telemetry-console/runtime-*.json
+bio-telemetry-console/validation-report.json

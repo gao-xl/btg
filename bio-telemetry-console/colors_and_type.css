@@ -1,0 +1,69 @@
+/* Bio-Telemetry & Haptic Control Console — Design Tokens */
+/* Dark Mode Geek-Industrial Dashboard */
+
+:root {
+  /* ===== Spacing (8pt grid) ===== */
+  --bio-spacing-1: 4px;
+  --bio-spacing-2: 8px;
+  --bio-spacing-3: 12px;
+  --bio-spacing-4: 16px;
+  --bio-spacing-5: 24px;
+  --bio-spacing-6: 32px;
+  --bio-spacing-7: 48px;
+  --bio-spacing-8: 80px;
+
+  /* ===== Typography ===== */
+  --bio-font-sans: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --bio-font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+
+  /* ===== Radius ===== */
+  --bio-radius-sm: 4px;
+  --bio-radius-md: 8px;
+  --bio-radius-lg: 12px;
+
+  /* ===== Shadow ===== */
+  --bio-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --bio-shadow-float: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+
+  /* ===== Core Surfaces ===== */
+  --bio-background: #09090B;
+  --bio-foreground: #E4E4E7;
+  --bio-card: #111114;
+  --bio-card-foreground: #E4E4E7;
+  --bio-card-hover: #18181B;
+  --bio-popover: #18181B;
+  --bio-popover-foreground: #E4E4E7;
+  --bio-muted: #71717A;
+  --bio-muted-foreground: #A1A1AA;
+  --bio-border: #27272A;
+  --bio-input: #27272A;
+  --bio-ring: #10B981;
+
+  /* ===== Primary Brand — Emerald (Normal/Safe) ===== */
+  --bio-primary: #10B981;
+  --bio-primary-foreground: #022C22;
+  --bio-primary-hover: #059669;
+  --bio-primary-muted: rgba(16, 185, 129, 0.12);
+
+  /* ===== State Colors ===== */
+  --bio-state-success: #10B981;
+  --bio-state-warning: #F59E0B;
+  --bio-state-error: #F43F5E;
+  --bio-state-info: #3B82F6;
+
+  /* ===== Chart Colors ===== */
+  --bio-chart-grid: rgba(255, 255, 255, 0.04);
+  --bio-chart-line: #10B981;
+  --bio-chart-area: rgba(16, 185, 129, 0.08);
+  --bio-chart-warning: #F59E0B;
+  --bio-chart-danger: #F43F5E;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bio-border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bio-muted); }
+
+/* ===== Selection ===== */
+::selection { background: var(--bio-primary); color: var(--bio-primary-foreground); }

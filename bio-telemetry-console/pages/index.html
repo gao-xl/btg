@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Console</title>
+    <style id="theme-vars">
+/* Bio-Telemetry & Haptic Control Console — Design Tokens */
+/* Dark Mode Geek-Industrial Dashboard */
+
+:root {
+  /* ===== Spacing (8pt grid) ===== */
+  --bio-spacing-1: 4px;
+  --bio-spacing-2: 8px;
+  --bio-spacing-3: 12px;
+  --bio-spacing-4: 16px;
+  --bio-spacing-5: 24px;
+  --bio-spacing-6: 32px;
+  --bio-spacing-7: 48px;
+  --bio-spacing-8: 80px;
+
+  /* ===== Typography ===== */
+  --bio-font-sans: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --bio-font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+
+  /* ===== Radius ===== */
+  --bio-radius-sm: 4px;
+  --bio-radius-md: 8px;
+  --bio-radius-lg: 12px;
+
+  /* ===== Shadow ===== */
+  --bio-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --bio-shadow-float: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+
+  /* ===== Core Surfaces ===== */
+  --bio-background: #09090B;
+  --bio-foreground: #E4E4E7;
+  --bio-card: #111114;
+  --bio-card-foreground: #E4E4E7;
+  --bio-card-hover: #18181B;
+  --bio-popover: #18181B;
+  --bio-popover-foreground: #E4E4E7;
+  --bio-muted: #71717A;
+  --bio-muted-foreground: #A1A1AA;
+  --bio-border: #27272A;
+  --bio-input: #27272A;
+  --bio-ring: #10B981;
+
+  /* ===== Primary Brand — Emerald (Normal/Safe) ===== */
+  --bio-primary: #10B981;
+  --bio-primary-foreground: #022C22;
+  --bio-primary-hover: #059669;
+  --bio-primary-muted: rgba(16, 185, 129, 0.12);
+
+  /* ===== State Colors ===== */
+  --bio-state-success: #10B981;
+  --bio-state-warning: #F59E0B;
+  --bio-state-error: #F43F5E;
+  --bio-state-info: #3B82F6;
+
+  /* ===== Chart Colors ===== */
+  --bio-chart-grid: rgba(255, 255, 255, 0.04);
+  --bio-chart-line: #10B981;
+  --bio-chart-area: rgba(16, 185, 129, 0.08);
+  --bio-chart-warning: #F59E0B;
+  --bio-chart-danger: #F43F5E;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bio-border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bio-muted); }
+
+/* ===== Selection ===== */
+::selection { background: var(--bio-primary); color: var(--bio-primary-foreground); }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--bio-background);
+    --color-foreground: var(--bio-foreground);
+    --color-card: var(--bio-card);
+    --color-card-foreground: var(--bio-card-foreground);
+    --color-popover: var(--bio-popover);
+    --color-popover-foreground: var(--bio-popover-foreground);
+    --color-primary: var(--bio-primary);
+    --color-primary-foreground: var(--bio-primary-foreground);
+    --color-muted: var(--bio-muted);
+    --color-muted-foreground: var(--bio-muted-foreground);
+    --color-border: var(--bio-border);
+    --color-input: var(--bio-input);
+    --color-ring: var(--bio-ring);
+    --radius-sm: var(--bio-radius-sm);
+    --radius-md: var(--bio-radius-md);
+    --radius-lg: var(--bio-radius-lg);
+  }
+  @layer base {
+    body { background: var(--bio-background); color: var(--bio-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--bio-background); }
+      .text-background { color: var(--bio-background); }
+      .border-background { border-color: var(--bio-background); }
+      .ring-background { --tw-ring-color: var(--bio-background); }
+      .bg-foreground { background-color: var(--bio-foreground); }
+      .text-foreground { color: var(--bio-foreground); }
+      .border-foreground { border-color: var(--bio-foreground); }
+      .ring-foreground { --tw-ring-color: var(--bio-foreground); }
+      .bg-card { background-color: var(--bio-card); }
+      .text-card { color: var(--bio-card); }
+      .border-card { border-color: var(--bio-card); }
+      .ring-card { --tw-ring-color: var(--bio-card); }
+      .bg-card-foreground { background-color: var(--bio-card-foreground); }
+      .text-card-foreground { color: var(--bio-card-foreground); }
+      .border-card-foreground { border-color: var(--bio-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--bio-card-foreground); }
+      .bg-popover { background-color: var(--bio-popover); }
+      .text-popover { color: var(--bio-popover); }
+      .border-popover { border-color: var(--bio-popover); }
+      .ring-popover { --tw-ring-color: var(--bio-popover); }
+      .bg-popover-foreground { background-color: var(--bio-popover-foreground); }
+      .text-popover-foreground { color: var(--bio-popover-foreground); }
+      .border-popover-foreground { border-color: var(--bio-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--bio-popover-foreground); }
+      .bg-primary { background-color: var(--bio-primary); }
+      .text-primary { color: var(--bio-primary); }
+      .border-primary { border-color: var(--bio-primary); }
+      .ring-primary { --tw-ring-color: var(--bio-primary); }
+      .bg-primary-foreground { background-color: var(--bio-primary-foreground); }
+      .text-primary-foreground { color: var(--bio-primary-foreground); }
+      .border-primary-foreground { border-color: var(--bio-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--bio-primary-foreground); }
+      .bg-muted { background-color: var(--bio-muted); }
+      .text-muted { color: var(--bio-muted); }
+      .border-muted { border-color: var(--bio-muted); }
+      .ring-muted { --tw-ring-color: var(--bio-muted); }
+      .bg-muted-foreground { background-color: var(--bio-muted-foreground); }
+      .text-muted-foreground { color: var(--bio-muted-foreground); }
+      .border-muted-foreground { border-color: var(--bio-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--bio-muted-foreground); }
+      .bg-border { background-color: var(--bio-border); }
+      .text-border { color: var(--bio-border); }
+      .border-border { border-color: var(--bio-border); }
+      .ring-border { --tw-ring-color: var(--bio-border); }
+      .bg-input { background-color: var(--bio-input); }
+      .text-input { color: var(--bio-input); }
+      .border-input { border-color: var(--bio-input); }
+      .ring-input { --tw-ring-color: var(--bio-input); }
+      .bg-ring { background-color: var(--bio-ring); }
+      .text-ring { color: var(--bio-ring); }
+      .border-ring { border-color: var(--bio-ring); }
+      .ring-ring { --tw-ring-color: var(--bio-ring); }
+    </style>
+    <style id="critical-layout">
+      /* App-Shell Dashboard Layout */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { height: 100%; overflow: hidden; }
+      .app-shell {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        height: 100dvh;
+        width: 100%;
+      }
+      .app-header {
+        flex-shrink: 0;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        padding: 0 var(--bio-spacing-4);
+        background: var(--bio-card);
+        border-bottom: 1px solid var(--bio-border);
+        z-index: 50;
+      }
+      .app-main {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 7fr 5fr;
+        gap: 0;
+        overflow: hidden;
+      }
+      .app-panel-left {
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: var(--bio-spacing-4);
+        border-right: 1px solid var(--bio-border);
+      }
+      .app-panel-right {
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: var(--bio-spacing-4);
+      }
+      @media (max-width: 1023px) {
+        .app-main {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto auto;
+          overflow-y: auto;
+        }
+        .app-panel-left {
+          border-right: none;
+          border-bottom: 1px solid var(--bio-border);
+        }
+      }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+    <style>
+      /* ===== Dashboard Component Styles ===== */
+      .font-data { font-family: var(--bio-font-mono); }
+
+      /* BPM pulse animation */
+      @keyframes bpm-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.75; }
+      }
+      .bpm-value { animation: bpm-pulse 1.2s ease-in-out infinite; }
+
+      /* Status dot */
+      .status-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .status-dot-ok { background: var(--bio-state-success); }
+      .status-dot-warn { background: var(--bio-state-warning); }
+      .status-dot-err { background: var(--bio-state-error); }
+
+      /* Card */
+      .dashboard-card {
+        background: var(--bio-card);
+        border: 1px solid var(--bio-border);
+        border-radius: var(--bio-radius-md);
+        padding: var(--bio-spacing-4);
+      }
+
+      /* Stress progress bar */
+      .stress-bar-track {
+        height: 8px;
+        background: var(--bio-input);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .stress-bar-fill {
+        height: 100%;
+        background: var(--bio-primary);
+        border-radius: 4px;
+        width: 42%;
+        transition: width 300ms ease;
+      }
+
+      /* Slider styles */
+      .actuator-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 4px;
+        background: linear-gradient(to right, #10B981 0%, #F59E0B 50%, #F43F5E 100%);
+        outline: none;
+        cursor: pointer;
+      }
+      .actuator-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--bio-foreground);
+        border: 2px solid var(--bio-primary);
+        cursor: pointer;
+        transition: box-shadow 150ms ease;
+      }
+      .actuator-slider::-webkit-slider-thumb:hover {
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+      }
+      .actuator-slider::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--bio-foreground);
+        border: 2px solid var(--bio-primary);
+        cursor: pointer;
+        transition: box-shadow 150ms ease;
+      }
+      .actuator-slider::-moz-range-thumb:hover {
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+      }
+
+      /* Waveform toggle buttons */
+      .waveform-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: var(--bio-radius-sm);
+        border: 1px solid var(--bio-border);
+        background: var(--bio-card);
+        color: var(--bio-muted-foreground);
+        font-family: var(--bio-font-sans);
+        font-size: 13px;
+        cursor: pointer;
+        transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+        outline: none;
+      }
+      .waveform-btn:hover {
+        background: var(--bio-card-hover);
+        color: var(--bio-foreground);
+      }
+      .waveform-btn:focus-visible {
+        box-shadow: 0 0 0 2px var(--bio-ring);
+      }
+      .waveform-btn.active {
+        background: var(--bio-primary);
+        color: var(--bio-primary-foreground);
+        border-color: var(--bio-primary);
+      }
+
+      /* Frequency stepper */
+      .freq-btn {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--bio-primary);
+        border-radius: var(--bio-radius-sm);
+        background: transparent;
+        color: var(--bio-primary);
+        font-family: var(--bio-font-mono);
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 150ms ease, color 150ms ease;
+        outline: none;
+      }
+      .freq-btn:hover {
+        background: var(--bio-primary);
+        color: var(--bio-primary-foreground);
+      }
+      .freq-btn:focus-visible {
+        box-shadow: 0 0 0 2px var(--bio-ring);
+      }
+      .freq-btn:active {
+        background: var(--bio-primary-hover);
+        color: var(--bio-primary-foreground);
+      }
+
+      /* State badge */
+      .state-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-family: var(--bio-font-mono);
+      }
+      .state-badge-baseline {
+        background: var(--bio-primary-muted);
+        color: var(--bio-primary);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+      }
+      .state-badge-peak {
+        background: rgba(245, 158, 11, 0.12);
+        color: var(--bio-state-warning);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+      }
+      .state-badge-danger {
+        background: rgba(244, 63, 94, 0.12);
+        color: var(--bio-state-error);
+        border: 1px solid rgba(244, 63, 94, 0.2);
+      }
+
+      /* Trend indicator */
+      .trend-up { color: var(--bio-primary); }
+
+      /* Chart container */
+      .chart-container {
+        position: relative;
+        width: 100%;
+        height: 220px;
+      }
+
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        .bpm-value { animation: none; }
+        .actuator-slider::-webkit-slider-thumb { transition: none; }
+        .actuator-slider::-moz-range-thumb { transition: none; }
+        .waveform-btn { transition: none; }
+        .freq-btn { transition: none; }
+        .stress-bar-fill { transition: none; }
+        *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+      }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div class="app-shell" data-viewport-mode="app-shell">
+        <!-- ===== System Header ===== -->
+        <header id="system-header" class="app-header">
+            <div class="flex items-center gap-2">
+                <i data-lucide="activity" class="text-primary" style="width:20px;height:20px;"></i>
+                <span class="font-data text-primary font-bold tracking-wider text-[15px]">BIO-TCS</span>
+            </div>
+            <div class="flex items-center gap-2 mx-auto">
+                <span class="status-dot status-dot-ok"></span>
+                <i data-lucide="shield-check" class="text-primary" style="width:16px;height:16px;"></i>
+                <span class="text-sm text-foreground">系统正常</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1.5">
+                    <i data-lucide="wifi" class="text-primary" style="width:14px;height:14px;"></i>
+                    <span class="text-xs text-muted-foreground">MQTT</span>
+                    <span class="font-data text-xs text-primary">12ms</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="status-dot status-dot-ok" style="width:6px;height:6px;"></span>
+                    <span class="text-xs text-muted-foreground">WS</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== Main Content ===== -->
+        <div class="app-main">
+            <!-- ===== Left: Bio-Telemetry Panel ===== -->
+            <section id="section-bio-telemetry" class="app-panel-left overflow-y-auto" data-scroll-region="primary">
+                <div class="flex flex-col gap-4">
+
+                    <!-- BPM Display -->
+                    <div class="dashboard-card">
+                        <div class="flex flex-col items-center py-4">
+                            <span class="font-data text-primary bpm-value" style="font-size:clamp(48px,8vw,96px);line-height:1;font-weight:700;">125</span>
+                            <span class="text-sm text-muted-foreground mt-1">BPM</span>
+                            <span class="text-xs text-muted-foreground mt-0.5">实时心率</span>
+                            <span class="font-data text-xs trend-up mt-2 flex items-center gap-1">
+                                <span>&#9650;</span> 3.2%
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Heart Rate Chart -->
+                    <div class="dashboard-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs text-muted-foreground font-data">ECG WAVEFORM</span>
+                            <span class="text-xs text-muted-foreground font-data">30s</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="heartRateChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Stress Level -->
+                    <div class="dashboard-card">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-foreground">压力指数</span>
+                            <span class="font-data text-sm text-primary">42%</span>
+                        </div>
+                        <div class="stress-bar-track">
+                            <div class="stress-bar-fill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Status Determination -->
+                    <div class="dashboard-card">
+                        <div class="text-xs text-muted-foreground mb-3 font-data">STATUS</div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="state-badge state-badge-baseline">基线</span>
+                            <span class="state-badge state-badge-peak">峰值</span>
+                            <span class="state-badge state-badge-danger">危险</span>
+                        </div>
+                        <div class="text-xs text-muted-foreground">
+                            当前判定: <span class="text-primary font-data">Baseline</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ===== Right: Actuator Control Panel ===== -->
+            <section id="section-actuator-control" class="app-panel-right overflow-y-auto" data-scroll-region="primary">
+                <div class="flex flex-col gap-4">
+
+                    <!-- Dual-Channel Sliders -->
+                    <div class="dashboard-card">
+                        <div class="text-xs text-muted-foreground mb-3 font-data">CHANNELS</div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Channel A -->
+                            <div class="flex flex-col items-center gap-3">
+                                <span class="font-data text-sm text-primary">A: 35%</span>
+                                <div class="flex flex-col items-center" style="height:180px;">
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        value="35"
+                                        class="actuator-slider"
+                                        style="width:180px;transform:rotate(-90deg);transform-origin:center center;margin-top:81px;"
+                                        aria-label="通道 A 强度"
+                                    />
+                                </div>
+                                <span class="text-xs text-muted-foreground">通道 A</span>
+                            </div>
+                            <!-- Channel B -->
+                            <div class="flex flex-col items-center gap-3">
+                                <span class="font-data text-sm text-primary">B: 72%</span>
+                                <div class="flex flex-col items-center" style="height:180px;">
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        value="72"
+                                        class="actuator-slider"
+                                        style="width:180px;transform:rotate(-90deg);transform-origin:center center;margin-top:81px;"
+                                        aria-label="通道 B 强度"
+                                    />
+                                </div>
+                                <span class="text-xs text-muted-foreground">通道 B</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Waveform Selection -->
+                    <div class="dashboard-card">
+                        <div class="text-xs text-muted-foreground mb-3 font-data">WAVEFORM</div>
+                        <div class="flex gap-2">
+                            <button class="waveform-btn active" data-waveform="continuous">
+                                <i data-lucide="waves" style="width:16px;height:16px;"></i>
+                                连续
+                            </button>
+                            <button class="waveform-btn" data-waveform="pulse">
+                                <i data-lucide="activity" style="width:16px;height:16px;"></i>
+                                脉冲
+                            </button>
+                            <button class="waveform-btn" data-waveform="wave">
+                                <i data-lucide="git-branch" style="width:16px;height:16px;"></i>
+                                波浪
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Frequency Stepper -->
+                    <div class="dashboard-card">
+                        <div class="text-xs text-muted-foreground mb-3 font-data">FREQUENCY</div>
+                        <div class="flex flex-col items-center gap-3">
+                            <span class="text-xs text-muted-foreground">输出频率</span>
+                            <div class="flex items-center gap-4">
+                                <button class="freq-btn" id="freq-minus" aria-label="减少频率">-</button>
+                                <span class="font-data text-primary" style="font-size:28px;font-weight:600;min-width:80px;text-align:center;">50 Hz</span>
+                                <button class="freq-btn" id="freq-plus" aria-label="增加频率">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+      lucide.createIcons();
+
+      /* ===== Heart Rate Chart ===== */
+      (function() {
+        const ctx = document.getElementById('heartRateChart');
+        if (!ctx) return;
+
+        const labels = [];
+        for (let i = 0; i < 30; i++) {
+          labels.push('-' + (30 - i) + 's');
+        }
+
+        // Simulate ECG-like heartbeat pattern (6-7 peaks in 30 points)
+        const data = [];
+        const peakIndices = [3, 8, 13, 18, 23, 28];
+        for (let i = 0; i < 30; i++) {
+          let val = 85 + Math.random() * 10;
+          for (const p of peakIndices) {
+            const dist = Math.abs(i - p);
+            if (dist < 2) {
+              val = dist === 0 ? 122 + Math.random() * 6 : 105 + Math.random() * 15;
+            }
+          }
+          data.push(Math.round(val));
+        }
+
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: data,
+              borderColor: '#10B981',
+              borderWidth: 1.5,
+              fill: true,
+              backgroundColor: 'rgba(16, 185, 129, 0.08)',
+              pointRadius: 0,
+              tension: 0.4,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: {
+                display: false,
+              },
+              y: {
+                display: false,
+                min: 60,
+                max: 135,
+              }
+            },
+            elements: { line: { borderJoinStyle: 'round' } }
+          }
+        });
+      })();
+
+      /* ===== Waveform Toggle Buttons ===== */
+      (function() {
+        const btns = document.querySelectorAll('.waveform-btn');
+        btns.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            btns.forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+          });
+        });
+      })();
+
+      /* ===== Frequency Stepper ===== */
+      (function() {
+        const display = document.querySelector('#freq-minus').parentElement.querySelector('.font-data');
+        let freq = 50;
+        const minFreq = 5;
+        const maxFreq = 200;
+        const step = 5;
+
+        function updateDisplay() {
+          if (display) display.textContent = freq + ' Hz';
+        }
+
+        document.getElementById('freq-minus').addEventListener('click', function() {
+          if (freq > minFreq) { freq -= step; updateDisplay(); }
+        });
+        document.getElementById('freq-plus').addEventListener('click', function() {
+          if (freq < maxFreq) { freq += step; updateDisplay(); }
+        });
+      })();
+    </script>
+</body>
+</html>

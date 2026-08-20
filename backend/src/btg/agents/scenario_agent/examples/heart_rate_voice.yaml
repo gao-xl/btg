@@ -1,0 +1,38 @@
+id: heart-rate-voice-demo
+metadata:
+  title: Heart-rate and voice controlled demonstration
+start_scene: introduction
+scenes:
+  - id: introduction
+    tts_text: "演示已开始。请在准备好后说继续。"
+    actuator_cmds:
+      - channel: tens_intensity
+        actuator_id: primary_tens
+        value: 5
+        unit: mA
+    wait_condition:
+      event_type: stt
+      field: text
+      operator: contains
+      value: "继续"
+      timeout_seconds: 60
+    on_success: heart_rate_check
+    on_timeout: end
+
+  - id: heart_rate_check
+    tts_text: "正在等待心率条件。"
+    wait_condition:
+      event_type: telemetry
+      field: heart_rate_bpm
+      operator: gt
+      value: 120
+      duration_seconds: 10
+      timeout_seconds: 180
+    on_success: acknowledged
+    on_timeout: end
+
+  - id: acknowledged
+    tts_text: "已达到目标条件，演示结束。"
+
+  - id: end
+    tts_text: "条件未满足或已超时，演示结束。"

@@ -1,0 +1,28 @@
+{
+  "name": "Bio-Telemetry & Haptic Control Console",
+  "version": 1,
+  "description": "Industrial IoT monitoring dashboard for remote bio-telemetry and haptic actuator control with dark mode geek aesthetic.",
+  "data": [
+    {
+      "id": "page-index",
+      "title": "Control Console",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1755654000000,
+      "devMetadata": {
+        "htmlSrc": "pages/index.html",
+        "interactions": []
+      },
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 0
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "desktop",
+    "projectName": "Bio-Telemetry Console"
+  }
+}

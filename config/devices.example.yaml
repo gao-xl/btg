@@ -1,0 +1,93 @@
+# 设备/通道冗余配置示例。
+# 逻辑通道可绑定多个物理设备，priority 越小越优先，主设备掉线自动切换备用。
+# 内置 mock 插件用于开发联调；真实硬件（迈金/小米手环/摄像头等）以插件形式接入。
+channels:
+  heart_rate:
+    type: sensor
+    devices:
+      - plugin: mock_sensor
+        priority: 1
+        config: { channel: heart_rate, unit: bpm, base_value: 80, interval: 0.5 }
+      - plugin: mock_sensor
+        priority: 2
+        config: { channel: heart_rate, unit: bpm, base_value: 85, interval: 0.5 }
+  tens_intensity:
+    type: actuator
+    devices:
+      - plugin: mock_actuator
+        priority: 1
+  # 触觉/震动反馈通道：通过 Intiface Engine 控制 Buttplug 兼容设备（Spec v4）。
+  # 前置：pip install "btg-backend[buttplug]" 并启动 Intiface（默认 ws://127.0.0.1:12345）。
+  # haptic_feedback:
+  #   type: actuator
+  #   devices:
+  #     - plugin: buttplug_proxy
+  #       priority: 1
+  #       config:
+  #         server_url: ws://127.0.0.1:12345
+  #         scan_duration_seconds: 5
+  #         # BTG 逻辑通道名 -> Buttplug OutputType 枚举名（缺省为 VIBRATE）
+  #         channel_output_types:
+  #           haptic_feedback: [VIBRATE]
+  # 郊狼（DG-LAB Coyote V2）电刺激设备：通过 BLE 直连驱动单通道强度。
+  # 前置：pip install "btg-backend[coyote]"。address 省略时按 name 自动发现。
+  # coyote_output:
+  #   type: actuator
+  #   devices:
+  #     - plugin: coyote
+  #       priority: 1
+  #       config:
+  #         address: null          # 或填 BLE MAC 地址，如 "AA:BB:CC:DD:EE:FF"
+  #         name: D-LAB ESTIM01
+  #         channel: A             # A 或 B
+  #         x: 1                   # 波形突发长度 (0-31)
+  #         y: 9                   # 波形间隔 (0-1023)；x+y 决定频率
+  #         z: 20                  # 脉宽 (0-31)
+  #         wave_interval: 0.1     # 波形 10Hz 重发周期（设备每 0.1s 失效）
+  #     - plugin: mock_actuator
+  #       priority: 2
+  # 役次元设备：通过官方 API-bridge 把安全后的 0-100 目标映射到 App 事件 ID。
+  # 详见 docs/yokonex-integration.md。默认只允许本机 bridge，且不在 BTG 保存连接码。
+  # yokonex_output:
+  #   type: actuator
+  #   devices:
+  #     - plugin: yokonex_im
+  #       priority: 1
+  #       config:
+  #         bridge_url: http://127.0.0.1:3001
+  #         timeout_seconds: 5
+  #         stop_command_id: _stop_all
+  #         levels:
+  #           - { max_value: 25, command_id: btg_low }
+  #           - { max_value: 50, command_id: btg_medium }
+  #           - { max_value: 100, command_id: btg_high }
+  #     - plugin: mock_actuator
+  #       priority: 2
+  # ── 主机 + 开发板方案（MQTT 远程设备）────────────────────────────────
+  # 前置：pip install "btg-backend[mqtt]"，并在主机起 Mosquitto；
+  # 板端运行 board_agent 薄代理。真实采集/执行跑在板端，主机仅当它们是
+  # 普通设备。板掉线时按 priority 自动切到本地 backup。
+  # 远程心率（来自开发板 rk-01）：
+  #   devices:
+  #     - plugin: mqtt_bridge
+  #       priority: 1
+  #       config:
+  #         board_id: rk-01
+  #         channel: heart_rate
+  #         broker_host: 127.0.0.1
+  #         broker_port: 1883
+  #         username: ""
+  #         password: ""
+  #     - plugin: mock_sensor
+  #       priority: 2
+  #       config: { channel: heart_rate, unit: bpm, base_value: 80, interval: 0.5 }
+  # 远程执行器（由开发板本地驱动郊狼等，向板下发 target）：
+  #   devices:
+  #     - plugin: mqtt_bridge
+  #       priority: 1
+  #       config:
+  #         board_id: rk-01
+  #         broker_host: 127.0.0.1
+  #         broker_port: 1883
+  #     - plugin: mock_actuator
+  #       priority: 2

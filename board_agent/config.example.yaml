@@ -1,0 +1,20 @@
+"""板端薄代理示例配置。复制为 ``config.yaml`` 并按内网 broker 修改。"""
+board_id: rk-01
+
+broker:
+  host: 192.168.1.10    # 主机（运行 Mosquitto 的网关）内网 IP
+  port: 1883
+  username: ""          # 内网简单密码验证；留空则不校验
+  password: ""
+  prefix: btg
+
+sensors:
+  - channel: heart_rate
+    driver: mock_hr      # 联调用；真实驱动后续在此接入
+    interval: 1.0
+
+actuators:
+  - channel: tens_intensity
+    driver: mock_act
+
+heartbeat_interval: 5
