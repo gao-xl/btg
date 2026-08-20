@@ -36,3 +36,22 @@ def test_app_exposes_modules_endpoint() -> None:
     app = create_app(gateway)
     paths = set(app.openapi()["paths"])
     assert "/api/v1/modules" in paths
+
+
+def test_app_exposes_ops_endpoints() -> None:
+    """运维补全批次新增端点必须全部挂载（estop / video / health / 模块启停）。"""
+    gateway = Gateway(settings=AppSettings.from_env())
+    app = create_app(gateway)
+    paths = set(app.openapi()["paths"])
+    for expected in (
+        "/api/v1/estop/status",
+        "/api/v1/estop",
+        "/api/v1/video/cameras",
+        "/api/v1/video/cameras/{name}/frame",
+        "/api/v1/video/cameras/{name}/algorithm",
+        "/api/v1/health",
+        "/api/v1/modules/{name}/start",
+        "/api/v1/modules/{name}/stop",
+        "/api/v1/modules/{name}/health",
+    ):
+        assert expected in paths, f"缺失端点: {expected}"
